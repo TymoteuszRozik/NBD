@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <!-- Database connection settings -->
+        <property name="connection.driver_class">org.postgresql.Driver</property>
+        <property name="connection.url">jdbc:postgresql://localhost:5432/nbddb</property>
+        <property name="connection.username">nbd</property>
+        <property name="connection.password">nbdpassword</property>
+
+        <!-- JDBC connection pool settings -->
+        <property name="connection.pool_size">5</property>
+
+        <!-- SQL dialect -->
+        <property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+
+        <!-- Echo all executed SQL to stdout -->
+        <property name="show_sql">true</property>
+        <property name="format_sql">true</property>
+
+        <!-- Drop and re-create the database schema on startup -->
+        <property name="hbm2ddl.auto">create</property>
+
+        <!-- Mention annotated entity classes -->
+        <mapping class="com.library.model.Person"/>
+        <mapping class="com.library.model.User"/>
+        <mapping class="com.library.model.Librarian"/>
+        <mapping class="com.library.model.LibraryItem"/>
+        <mapping class="com.library.model.Book"/>
+        <mapping class="com.library.model.Magazine"/>
+        <mapping class="com.library.model.Author"/>
+        <mapping class="com.library.model.Loan"/>
+
+    </session-factory>
+</hibernate-configuration>
