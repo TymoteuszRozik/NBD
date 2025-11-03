@@ -14,7 +14,6 @@ public class HibernateConfig {
         try {
             Configuration configuration = new Configuration();
 
-            // Hibernate settings
             Properties settings = new Properties();
             settings.put(Environment.DRIVER, "org.postgresql.Driver");
             settings.put(Environment.URL, "jdbc:postgresql://localhost:5432/nbddb");
@@ -22,16 +21,14 @@ public class HibernateConfig {
             settings.put(Environment.PASS, "nbdpassword");
             settings.put(Environment.DIALECT, "org.hibernate.dialect.PostgreSQLDialect");
             settings.put(Environment.SHOW_SQL, "true");
-            settings.put(Environment.HBM2DDL_AUTO, "create"); // Changed to create only
+            settings.put(Environment.HBM2DDL_AUTO, "create");
             settings.put(Environment.FORMAT_SQL, "true");
 
-            // Critical: Add these naming strategy properties
             settings.put("hibernate.physical_naming_strategy", "org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy");
             settings.put("hibernate.implicit_naming_strategy", "org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl");
 
             configuration.setProperties(settings);
 
-            // Add annotated classes
             configuration.addAnnotatedClass(com.library.model.Person.class);
             configuration.addAnnotatedClass(com.library.model.User.class);
             configuration.addAnnotatedClass(com.library.model.Librarian.class);

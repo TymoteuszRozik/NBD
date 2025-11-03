@@ -15,7 +15,7 @@ public class Main {
             LibraryItemRepository repository = new LibraryItemRepository();
             var items = repository.findAll();
 
-            System.out.println("✅ Application started successfully!");
+            System.out.println("Application started successfully!");
             System.out.println("Found " + items.size() + " library items:");
 
             // Display the items
@@ -39,7 +39,6 @@ public class Main {
         }
     }
 
-    // Add this method to your Main class
     private static void initializeSampleData() {
         org.hibernate.Session session = HibernateConfig.getSessionFactory().openSession();
         org.hibernate.Transaction transaction = session.beginTransaction();
@@ -47,13 +46,11 @@ public class Main {
         try {
             System.out.println("Initializing sample data...");
 
-            // Create Authors
             com.library.model.Author author1 = new com.library.model.Author("Adam Mickiewicz", "Polish");
             com.library.model.Author author2 = new com.library.model.Author("Stephen King", "American");
             session.persist(author1);
             session.persist(author2);
 
-            // Create Books
             com.library.model.Book book1 = new com.library.model.Book("Pan Tadeusz", 1834, "978-83-08-06008-7", "Wydawnictwo Literackie");
             book1.setAvailable(true);
             book1.addAuthor(author1);
@@ -64,7 +61,6 @@ public class Main {
             book2.addAuthor(author2);
             session.persist(book2);
 
-            // Create Magazine
             com.library.model.Magazine magazine = new com.library.model.Magazine("National Geographic", 2024, 245);
             magazine.setAvailable(true);
             session.persist(magazine);
