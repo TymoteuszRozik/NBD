@@ -1,41 +1,38 @@
 package com.library.model;
 
-import jakarta.persistence.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.experimental.SuperBuilder;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+@Data
+@EqualsAndHashCode(callSuper = true)
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+@Document(collection = "library_items")
 public class Book extends LibraryItem {
 
+    @Indexed(unique = true)
     private String isbn;
+
     private String publisher;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-            name = "book_authors",
-            joinColumns = @JoinColumn(name = "book_id"),
-            inverseJoinColumns = @JoinColumn(name = "author_id")
-    )
-    private List<Author> authors = new ArrayList<>();
+    private List<EmbeddedAuthor> authors = new ArrayList<>();
 
-    public Book() {}
-
-    public Book(String title, Integer publicationYear, String isbn, String publisher) {
-        super(title, publicationYear);
-        this.isbn = isbn;
-        this.publisher = publisher;
-    }
-
-    // getters and setters
-    public String getIsbn() { return isbn; }
-    public void setIsbn(String isbn) { this.isbn = isbn; }
-    public String getPublisher() { return publisher; }
-    public void setPublisher(String publisher) { this.publisher = publisher; }
-    public List<Author> getAuthors() { return authors; }
-    public void setAuthors(List<Author> authors) { this.authors = authors; }
-
-    public void addAuthor(Author author) {
-        authors.add(author);
-        author.getBooks().add(this);
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class EmbeddedAuthor {
+        private String authorId;
+        private String name;
+        private String nationality;
     }
 }

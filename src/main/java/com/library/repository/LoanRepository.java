@@ -1,40 +1,21 @@
 package com.library.repository;
 
-import com.library.config.HibernateConfig;
 import com.library.model.Loan;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
-public class LoanRepository {
+@Repository
+public interface LoanRepository extends MongoRepository<Loan, String> {
 
-    public Loan save(Loan loan) {
-        Session session = HibernateConfig.getSessionFactory().getCurrentSession();
-        Transaction transaction = session.beginTransaction();
-        try {
-            session.persist(loan);
-            transaction.commit();
-            return loan;
-        } catch (Exception e) {
-            transaction.rollback();
-            throw e;
-        }
-    }
+    List<Loan> findByUserIdAndStatus(String userId, Loan.LoanStatus status);
 
-    public List<Loan> findActiveLoansByUserId(Long userId) {
-        Session session = HibernateConfig.getSessionFactory().getCurrentSession();
-        Transaction transaction = session.beginTransaction();
-        try {
-            List<Loan> loans = session.createQuery(
-                            "SELECT l FROM Loan l WHERE l.user.id = :userId AND l.returnDate IS NULL",
-                            Loan.class)
-                    .setParameter("userId", userId)
-                    .list();
-            transaction.commit();
-            return loans;
-        } catch (Exception e) {
-            transaction.rollback();
-            throw e;
-        }
-    }
+    Optional<Loan> findByItemIdAndStatus(String itemId, Loan.LoanStatus status);
+
+    @Query("{ 'dueDate': { '$lt': ?0 }, 'status': 'ACTIVE' }")
+    List<Loan> findByDueDateBeforeAndStatus(LocalDate currentDate, Loan.LoanStatus status);
 }

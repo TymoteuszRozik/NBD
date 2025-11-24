@@ -1,34 +1,43 @@
 package com.library.model;
 
-import jakarta.persistence.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.experimental.SuperBuilder;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name = "library_user")
+@Data
+@EqualsAndHashCode(callSuper = true)
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+@Document(collection = "persons")
 public class User extends Person {
 
-    @Column(name = "reader_card_number", unique = true)
+    @Field("reader_card_number")
     private String readerCardNumber;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Loan> loans = new ArrayList<>();
+    @Field("active_loans_count")
+    private Integer activeLoansCount = 0;
 
-    public User() {}
+    @Field("max_allowed_loans")
+    private Integer maxAllowedLoans = 5;
 
-    public User(String firstName, String lastName, String email, String readerCardNumber) {
-        super(firstName, lastName, email);
-        this.readerCardNumber = readerCardNumber;
-    }
+    private List<EmbeddedLoan> currentLoans = new ArrayList<>();
 
-    // getters and setters
-    public String getReaderCardNumber() { return readerCardNumber; }
-    public void setReaderCardNumber(String readerCardNumber) { this.readerCardNumber = readerCardNumber; }
-    public List<Loan> getLoans() { return loans; }
-    public void setLoans(List<Loan> loans) { this.loans = loans; }
-
-    public void addLoan(Loan loan) {
-        loans.add(loan);
-        loan.setUser(this);
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class EmbeddedLoan {
+        private String loanId;
+        private String itemId;
+        private String itemTitle;
+        private String loanDate;
+        private String dueDate;
     }
 }

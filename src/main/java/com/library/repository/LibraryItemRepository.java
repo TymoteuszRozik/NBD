@@ -1,83 +1,34 @@
 package com.library.repository;
 
-import com.library.config.HibernateConfig;
 import com.library.model.LibraryItem;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.LockMode;
+import com.library.model.Book;
+import com.library.model.Magazine;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 import java.util.Optional;
 
-public class LibraryItemRepository {
+@Repository
+public interface LibraryItemRepository extends MongoRepository<LibraryItem, String> {
 
-    public LibraryItem save(LibraryItem item) {
-        Session session = HibernateConfig.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
-        try {
-            session.persist(item);
-            transaction.commit();
-            return item;
-        } catch (Exception e) {
-            transaction.rollback();
-            throw e;
-        } finally {
-            session.close();
-        }
-    }
+    @Query("{ 'itemType': 'BOOK' }")
+    List<Book> findAllBooks();
 
-    public Optional<LibraryItem> findById(Long id) {
-        Session session = HibernateConfig.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
-        try {
-            LibraryItem item = session.get(LibraryItem.class, id);
-            transaction.commit();
-            return Optional.ofNullable(item);
-        } catch (Exception e) {
-            transaction.rollback();
-            throw e;
-        } finally {
-            session.close();
-        }
-    }
+    @Query("{ 'itemType': 'MAGAZINE' }")
+    List<Magazine> findAllMagazines();
 
-    public Optional<LibraryItem> findByIdWithPessimisticLock(Long id) {
-        Session session = HibernateConfig.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
-        try {
-            LibraryItem item = session.get(LibraryItem.class, id, LockMode.PESSIMISTIC_WRITE);
-            transaction.commit();
-            return Optional.ofNullable(item);
-        } catch (Exception e) {
-            transaction.rollback();
-            throw e;
-        } finally {
-            session.close();
-        }
-    }
+    @Query("{ 'available': true, 'itemType': ?0 }")
+    List<LibraryItem> findAvailableByType(String itemType);
 
-    public List<LibraryItem> findAll() {
-        Session session = HibernateConfig.getSessionFactory().openSession();
-        try {
-            return session.createQuery("FROM LibraryItem", LibraryItem.class).list();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        } finally {
-            session.close();
-        }
-    }
+    Optional<LibraryItem> findByIdAndAvailableTrue(String id);
 
-    public void update(LibraryItem item) {
-        Session session = HibernateConfig.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
-        try {
-            session.merge(item);
-            transaction.commit();
-        } catch (Exception e) {
-            transaction.rollback();
-            throw e;
-        } finally {
-            session.close();
-        }
-    }
+    @Query("{ 'available': true }")
+    List<LibraryItem> findAllAvailable();
+
+    long countByAvailableTrue();
+
+    @Query("{ 'title': { '$regex': ?0, '$options': 'i' } }")
+    List<LibraryItem> findByTitleContaining(String title);
 }

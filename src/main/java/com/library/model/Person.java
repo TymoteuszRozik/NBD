@@ -1,39 +1,37 @@
 package com.library.model;
 
-import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.experimental.SuperBuilder;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
-@Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
+@Data
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+@Document(collection = "persons")
 public abstract class Person {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private String id;
 
-    @Column(name = "first_name", nullable = false)
+    @NotBlank(message = "First name is required")
+    @Field("first_name")
     private String firstName;
 
-    @Column(name = "last_name", nullable = false)
+    @NotBlank(message = "Last name is required")
+    @Field("last_name")
     private String lastName;
 
-    @Column(unique = true)
+    @Email(message = "Email should be valid")
     private String email;
 
-    public Person() {}
-
-    public Person(String firstName, String lastName, String email) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-    }
-
-    // getters and setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getFirstName() { return firstName; }
-    public void setFirstName(String firstName) { this.firstName = firstName; }
-    public String getLastName() { return lastName; }
-    public void setLastName(String lastName) { this.lastName = lastName; }
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    @Field("person_type")
+    private String personType;
 }

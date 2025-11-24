@@ -1,38 +1,34 @@
 package com.library.model;
 
-import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+
+import jakarta.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Document(collection = "authors")
 public class Author {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    @Column(nullable = false)
+    @NotBlank(message = "Author name is required")
+    @Indexed
     private String name;
 
     private String nationality;
 
-    @ManyToMany(mappedBy = "authors")
-    private List<Book> books = new ArrayList<>();
-
-    public Author() {}
-
-    public Author(String name, String nationality) {
-        this.name = name;
-        this.nationality = nationality;
-    }
-
-    // getters and setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public String getNationality() { return nationality; }
-    public void setNationality(String nationality) { this.nationality = nationality; }
-    public List<Book> getBooks() { return books; }
-    public void setBooks(List<Book> books) { this.books = books; }
+    @Field("book_ids")
+    private List<String> bookIds = new ArrayList<>();
 }

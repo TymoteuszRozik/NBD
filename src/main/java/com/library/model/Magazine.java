@@ -1,22 +1,24 @@
 package com.library.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.experimental.SuperBuilder;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
-@Entity
+@Data
+@EqualsAndHashCode(callSuper = true)
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+@Document(collection = "library_items")
 public class Magazine extends LibraryItem {
 
-    @Column(name = "issue_number")
+    @Field("issue_number")
     private Integer issueNumber;
 
-    public Magazine() {}
-
-    public Magazine(String title, Integer publicationYear, Integer issueNumber) {
-        super(title, publicationYear);
-        this.issueNumber = issueNumber;
-    }
-
-    // getters and setters
-    public Integer getIssueNumber() { return issueNumber; }
-    public void setIssueNumber(Integer issueNumber) { this.issueNumber = issueNumber; }
+    @Field("periodicity")
+    private String periodicity = "Monthly";
 }

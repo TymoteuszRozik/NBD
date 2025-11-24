@@ -1,22 +1,24 @@
 package com.library.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.experimental.SuperBuilder;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
-@Entity
+@Data
+@EqualsAndHashCode(callSuper = true)
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+@Document(collection = "persons")
 public class Librarian extends Person {
 
-    @Column(name = "employee_id", unique = true)
+    @Field("employee_id")
     private String employeeId;
 
-    public Librarian() {}
-
-    public Librarian(String firstName, String lastName, String email, String employeeId) {
-        super(firstName, lastName, email);
-        this.employeeId = employeeId;
-    }
-
-    // getters and setters
-    public String getEmployeeId() { return employeeId; }
-    public void setEmployeeId(String employeeId) { this.employeeId = employeeId; }
+    @Field("department")
+    private String department;
 }
