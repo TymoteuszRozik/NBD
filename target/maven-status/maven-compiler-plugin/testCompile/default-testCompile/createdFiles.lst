@@ -1,2 +1,6 @@
-com/library/repository/RepositoryIntegrationTest.class
-com/library/service/LoanServiceTest.class
+com\library\service\BusinessRulesTest.class
+com\library\service\MongoDBReplicaSetTest.class
+com\library\service\LoanServiceTest.class
+com\library\repository\DataMappingTest.class
+com\library\repository\RepositoryIntegrationTest.class
+com\library\repository\ComprehensiveCRUDTest.class

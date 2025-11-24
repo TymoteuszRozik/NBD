@@ -30,5 +30,6 @@ public class Author {
     private String nationality;
 
     @Field("book_ids")
+    @Builder.Default
     private List<String> bookIds = new ArrayList<>();
 }
